@@ -19,6 +19,12 @@ See Phergie documentation for more information on
 new \hashworks\Phergie\Plugin\MessageSplitter\Plugin
 ```
 
+Optionally you can adjust the tildePrefix variable (defaults to true) when your server isn't prefixing usernames with ~:
+```php
+new \hashworks\Phergie\Plugin\MessageSplitter\Plugin(array('tildePrefix' => false))
+```
+Mostly this won't be the case.
+
 ## Developers
 
 Since we need the correct username/ident and host set by the server to calculate the maximum message length this plugin updates those two as well.

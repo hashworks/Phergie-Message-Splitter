@@ -13,6 +13,16 @@ use Phergie\Irc\Event\UserEvent as Event;
  * @package hashworks\Phergie\Plugin\MessageSplitter
  */
 class Plugin extends AbstractPlugin {
+	private $tildePrefix = true;
+
+	/**
+	 * @param array $config
+	 */
+	public function __construct(array $config = array()) {
+		if (isset($config['tildePrefix'])) {
+			$this->tildePrefix = boolval($config['tildePrefix']);
+		}
+	}
 
 	public function getSubscribedEvents () {
 		return array(
@@ -30,7 +40,11 @@ class Plugin extends AbstractPlugin {
 					$event->getNick()   == $event->getConnection()->getNickname()) {
 				// It is. Update the host & user.
 				$event->getConnection()->setHostname($event->getHost());
-				$event->getConnection()->setUsername($event->getUsername());
+				$username = $event->getUsername();
+				if ($this->tildePrefix) {
+					$username = substr($username, 1);
+				}
+				$event->getConnection()->setUsername($username);
 			}
 		}
 	}
@@ -42,8 +56,10 @@ class Plugin extends AbstractPlugin {
 			$message = $event->getParams()[1];
 
 			// 512 byte max length, 5 go to ":$hostmask :$message\r\n", so 507 - length of the hostmask "nick!user@host"
-			$messageMaxLength = 507 - strlen($event->getConnection()->getNickname() . '!' . $event->getConnection()->getUsername() . '@' .
-							$event->getConnection()->getHostname() . ' ' . $command . ' ' . $target);
+			$string = $event->getConnection()->getNickname() . '!';
+			if ($this->tildePrefix) $string .= '~';
+			$string .= $event->getConnection()->getUsername() . '@' . $event->getConnection()->getHostname() . ' ' . $command . ' ' . $target;
+			$messageMaxLength = 507 - strlen($string);
 			if (strlen($message) > $messageMaxLength) {
 				// Message too long. Resend the part that got cut. If it's too long this function will be called again.
 				$method = 'irc' . $command;
