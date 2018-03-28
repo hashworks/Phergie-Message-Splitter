@@ -2,9 +2,9 @@
     "name": "hashworks/phergie-message-splitter-plugin",
     "description": "Phergie plugin to split too long messages send by the bot into multiple commands.",
     "keywords": [ "phergie", "irc", "bot", "plugin", "message", "split", "privmsg", "notice" ],
-    "license": "GNU GPL v3.0",
+    "license": "GPL-3.0-or-later",
     "support": {
-        "email": "admin@hashworks.net",
+        "email": "mail@hashworks.net",
         "irc": "irc://irc.freenode.net/phergie",
         "issues": "https://github.com/hashworks/PhergieMessageSplitter/issues",
         "source": "https://github.com/hashworks/PhergieMessageSplitter"
